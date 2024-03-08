@@ -1,6 +1,6 @@
 import { OrganizationList } from "@clerk/nextjs";
 
-export default function OrganizationPage() {
+export default function CreateOrganizationPage() {
     return (
         <OrganizationList
             hidePersonal
@@ -8,4 +8,4 @@ export default function OrganizationPage() {
             afterCreateOrganizationUrl="/organization/:id"
         />
     );
-}
+};
