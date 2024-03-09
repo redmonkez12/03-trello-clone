@@ -1,17 +1,19 @@
 import { List } from "@prisma/client";
 import { ElementRef, useRef, useState } from "react";
 import { useEventListener } from "usehooks-ts";
+import { toast } from "sonner";
+
 import { FormInput } from "@/components/form/form-input";
 import { useAction } from "@/hooks/use-action";
-import { updateList } from "@/actions/update-board";
-import { toast } from "sonner";
 import { ListOptions } from "@/app/(platform)/(dashboard)/board/[boardId]/_components/list-options";
+import { updateList } from "@/actions/update-list";
 
 type ListHeaderProps = {
-    data: List
+    data: List;
+    onAddCard(): void;
 };
 
-export function ListHeader({ data }: ListHeaderProps) {
+export function ListHeader({ data, onAddCard }: ListHeaderProps) {
     const [title, setTitle] = useState(data.title);
     const [isEditing, setIsEditing] = useState(false);
 
@@ -99,7 +101,7 @@ export function ListHeader({ data }: ListHeaderProps) {
                 </div>
             )}
             <ListOptions
-                onAddCard={() => {}}
+                onAddCard={onAddCard}
                 data={data}
             />
         </div>
