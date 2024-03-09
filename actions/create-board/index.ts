@@ -4,7 +4,7 @@ import { InputType, ReturnType } from "@/actions/create-board/types";
 import { auth } from "@clerk/nextjs";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
-import { createSafeAction } from "@/lib/create-safe.action";
+import { createSafeAction } from "@/lib/create-safe-action";
 import { CreateBoard } from "@/actions/create-board/schema";
 
 
