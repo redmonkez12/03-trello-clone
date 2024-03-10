@@ -6,16 +6,16 @@ import { ActivityIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ActivityItem } from "@/components/activity-item";
 
-interface ActivityProps {
+type ActivityProps = {
     items: AuditLog[];
-};
+}
 
-export const Activity = ({
+export function Activity({
                              items,
-                         }: ActivityProps) => {
+                         }: ActivityProps) {
     return (
         <div className="flex items-start gap-x-3 w-full">
-            <ActivityIcon className="h-5 w-5 mt-0.5 text-neutral-700" />
+            <ActivityIcon className="h-5 w-5 mt-0.5 text-neutral-700"/>
             <div className="w-full">
                 <p className="font-semibold text-neutral-700 mb-2">
                     Activity
@@ -31,7 +31,7 @@ export const Activity = ({
             </div>
         </div>
     );
-};
+}
 
 Activity.Skeleton = function ActivitySkeleton() {
     return (

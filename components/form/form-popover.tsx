@@ -1,47 +1,61 @@
 "use client";
 
-import { ElementRef, PropsWithChildren, useRef } from "react";
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { FormInput } from "@/components/form/form-input";
-import { FormSubmit } from "@/components/form/form-submit";
-import { useAction } from "@/hooks/use-action";
-import { createBoard } from "@/actions/create-board";
+import { ElementRef, useRef } from "react";
 import { toast } from "sonner";
-import { FormPicker } from "@/components/form/form-picker";
+import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    PopoverClose,
+} from "@/components/ui/popover";
+import { useAction } from "@/hooks/use-action";
+import { Button } from "@/components/ui/button";
+import { createBoard } from "@/actions/create-board";
+import { useProModal } from "@/hooks/use-pro-modal";
+
+import { FormInput } from "./form-input";
+import { FormSubmit } from "./form-submit";
+import { FormPicker } from "./form-picker";
+import { Board } from "@prisma/client";
+
 type FormPopoverProps = {
+    children: React.ReactNode;
     side?: "left" | "right" | "top" | "bottom";
     align?: "start" | "center" | "end";
     sideOffset?: number;
 };
 
-export function FormPopover({ side, align, sideOffset, children }: PropsWithChildren<FormPopoverProps>) {
-    const closeRef = useRef<ElementRef<"button">>(null);
+export function FormPopover({
+                                children,
+                                side = "bottom",
+                                align,
+                                sideOffset = 0,
+                            }: FormPopoverProps) {
+    const proModal = useProModal();
     const router = useRouter();
+    const closeRef = useRef<ElementRef<"button">>(null);
 
     const { execute, fieldErrors } = useAction(createBoard, {
-        onSuccess(data) {
-            toast.success("Board created");
+        onSuccess: (data: Board) => {
+            toast.success("Board created!");
             closeRef.current?.click();
             router.push(`/board/${data.id}`);
         },
-        onError(error) {
+        onError: (error) => {
             toast.error(error);
+            proModal.onOpen();
         }
     });
 
-    function onSubmit(formData: FormData) {
+    const onSubmit = (formData: FormData) => {
         const title = formData.get("title") as string;
         const image = formData.get("image") as string;
 
-        execute({
-            title,
-            image,
-        });
-    }
+        execute({ title, image });
+    };
 
     return (
         <Popover>
@@ -58,8 +72,11 @@ export function FormPopover({ side, align, sideOffset, children }: PropsWithChil
                     Create board
                 </div>
                 <PopoverClose ref={closeRef} asChild>
-                    <Button className="h-auto w-auto p-2 absolute top-2 right-2 text-neutral-600" variant="ghost">
-                        <X className="w-4 h-4"/>
+                    <Button
+                        className="h-auto w-auto p-2 absolute top-2 right-2 text-neutral-600"
+                        variant="ghost"
+                    >
+                        <X className="h-4 w-4"/>
                     </Button>
                 </PopoverClose>
                 <form action={onSubmit} className="space-y-4">
@@ -68,17 +85,16 @@ export function FormPopover({ side, align, sideOffset, children }: PropsWithChil
                             id="image"
                             errors={fieldErrors}
                         />
-
                         <FormInput
                             id="title"
                             label="Board title"
                             type="text"
                             errors={fieldErrors}
                         />
-                        <FormSubmit className="w-full">
-                            Create
-                        </FormSubmit>
                     </div>
+                    <FormSubmit className="w-full">
+                        Create
+                    </FormSubmit>
                 </form>
             </PopoverContent>
         </Popover>

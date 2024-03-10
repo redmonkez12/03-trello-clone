@@ -3,17 +3,19 @@ import { Suspense } from "react";
 import { Separator } from "@/components/ui/separator";
 
 import { ActivityList } from "./_components/activity-list";
+import { checkSubscription } from "@/lib/subscription";
+import { Info } from "@/app/(platform)/(dashboard)/organization/[organizationId]/_components/info";
 
-const ActivityPage = async () => {
+export default async function ActivityPage() {
+    const isPro = await checkSubscription();
 
     return (
         <div className="w-full">
-            <Separator className="my-2" />
-            <Suspense fallback={<ActivityList.Skeleton />}>
-                <ActivityList />
+            <Info isPro={isPro}/>
+            <Separator className="my-2"/>
+            <Suspense fallback={<ActivityList.Skeleton/>}>
+                <ActivityList/>
             </Suspense>
         </div>
     );
-};
-
-export default ActivityPage;
+}
